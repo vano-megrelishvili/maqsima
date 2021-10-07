@@ -1,9 +1,6 @@
 class Vigenere:
 
-    @classmethod
-    def build_matrix(cls):
-        # building matrix for encrypting or decrypting
-        return [[j % 26 + 65 for j in range(i, i + 26)] for i in range(26)]
+    MATRIX = [[j % 26 + 65 for j in range(i, i + 26)] for i in range(26)]
 
     @classmethod
     def adding_char(cls, data, char, is_lower=False):
@@ -63,7 +60,7 @@ class Vigenere:
     """
 
     @classmethod
-    def encrypt(cls, data, keyword, matrix):
+    def encrypt(cls, data, keyword):
         # encrypting data
 
         keyword = cls.match_data_length(data, keyword)
@@ -71,13 +68,13 @@ class Vigenere:
         for index, letter in enumerate(data):
             cls.check_char(letter.upper())
             cls.check_char(keyword[index].upper())
-            result = cls.adding_char(result, chr(matrix[ord(letter.upper()) - 65][ord(keyword[index].upper()) - 65]),
-                                     letter.islower())
+            result = cls.adding_char(result, chr(cls.MATRIX[ord(letter.upper()) - 65][ord(keyword[index].upper())
+                                                                                      - 65]), letter.islower())
 
         return result
 
     @classmethod
-    def decrypt(cls, encrypted_data, keyword, matrix):
+    def decrypt(cls, encrypted_data, keyword):
         # decrypting data
 
         keyword = cls.match_data_length(encrypted_data, keyword)
@@ -85,8 +82,8 @@ class Vigenere:
         for index, letter in enumerate(encrypted_data):
             cls.check_char(letter.upper())
             cls.check_char(keyword[index].upper())
-            result = cls.adding_char(result, chr(matrix[ord(keyword[index].upper()) - 65].index(ord(letter.upper())) +
-                                                 65), letter.islower())
+            result = cls.adding_char(result, chr(cls.MATRIX[ord(keyword[index].upper()) - 65].index(ord(letter.upper()))
+                                                 + 65), letter.islower())
 
         return result
 
@@ -95,7 +92,9 @@ if __name__ == "__main__":
 
     try:
 
-        action_input = input("which one do you want , encryption or decryption ?(use upper case)/(type E or D): ")
+        action_input = input("which one do you want , encryption or decryption ?(use upper case)/\nyou can also input"
+                             " data as a char tuple or list , just make sure the format is right, \nand the code will "
+                             "use only the inserted type of data to perform tasks\n(type E or D): ")
         data_input, keyword_input = Vigenere.change_input(input("input data: ")), Vigenere.change_input(input(
             "input keyword: "))
 
@@ -103,9 +102,9 @@ if __name__ == "__main__":
             raise ValueError("input shouldn't be empty")
 
         if action_input == "E":
-            print("encrypted data: ", Vigenere.encrypt(data_input, keyword_input, Vigenere.build_matrix()))
+            print("encrypted data: ", Vigenere.encrypt(data_input, keyword_input))
         elif action_input == "D":
-            print("decrypted data: ", Vigenere.decrypt(data_input, keyword_input, Vigenere.build_matrix()))
+            print("decrypted data: ", Vigenere.decrypt(data_input, keyword_input))
         else:
             print("wrong input")
 
